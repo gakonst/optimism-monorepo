@@ -139,6 +139,17 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
         this.assertParameters(params, 0)
         response = await this.networkVersion()
         break
+      case Web3RpcMethods.evmSnapshot:
+        this.assertParameters(params, 0)
+        response = await this.provider.send(Web3RpcMethods.evmSnapshot, [])
+        break
+      case Web3RpcMethods.evmRevert:
+        args = this.assertParameters(params, 1)
+        response = await this.provider.send(Web3RpcMethods.evmRevert, params)
+        break
+      case Web3RpcMethods.evmMine:
+        response = await this.provider.send(Web3RpcMethods.evmMine, params)
+        break
       default:
         const msg: string = `Method / params [${method} / ${JSON.stringify(
           params
@@ -271,7 +282,8 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
     defaultBlock: string
   ): Promise<string> {
     if (defaultBlock !== 'latest') {
-      throw new Error('No support for historical code lookups!')
+      // throw new Error('No support for historical code lookups!')
+      log.warn('No support for historical code lookups!')
     }
     log.debug(
       `Getting code for address: [${address}], defaultBlock: [${defaultBlock}]`

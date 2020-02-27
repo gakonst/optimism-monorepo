@@ -37,4 +37,7 @@ export enum Web3RpcMethods {
   getTransactionReceipt = 'eth_getTransactionReceipt',
   networkVersion = 'net_version',
   sendRawTransaction = 'eth_sendRawTransaction',
+  evmSnapshot = 'evm_snapshot',
+  evmRevert = 'evm_revert',
+  evmMine = 'evm_mine',
 }
