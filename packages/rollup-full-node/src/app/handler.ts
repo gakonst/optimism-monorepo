@@ -394,7 +394,7 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
           e
         )
 
-        await this.executionManager.incrementNonce(add0x(ovmTx.from))
+        // await this.executionManager.incrementNonce(add0x(ovmTx.from))
         log.debug(`Nonce incremented successfully for ${ovmTx.from}.`)
 
         return ovmTxHash
@@ -457,16 +457,14 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
     // Generate the calldata which we'll use to call our internal execution manager
     // First pull out the `to` field (we just need to check if it's null & if so set ovmTo to the zero address as that's how we deploy contracts)
     const ovmTo = ovmTx.to === null ? ZERO_ADDRESS : ovmTx.to
+    // TODO: Verify that the nonce on the transaction is correct
     // Construct the raw transaction calldata
-    const internalCalldata = this.generateEOACallCalldata(
+    const internalCalldata = this.generateUnsignedCallCalldata(
       0,
       0,
-      ovmTx.nonce,
       ovmTo,
       ovmTx.data,
-      ovmTx.v,
-      ovmTx.r,
-      ovmTx.s
+      ovmTx.from
     )
 
     log.debug(`EOA calldata: [${internalCalldata}]`)
