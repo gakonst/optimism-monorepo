@@ -7,7 +7,7 @@ import { FullnodeHandler } from '../types'
 import { Web3Provider } from 'ethers/providers'
 
 /* Internal Imports */
-import { DefaultWeb3Handler } from './handler'
+import { DefaultWeb3Handler } from './web3-rpc-handler'
 import { FullnodeRpcServer } from './fullnode-rpc-server'
 
 const log = getLogger('utils')
@@ -76,9 +76,8 @@ export async function deployOvmContract(
   )
 }
 
-export async function createMockProvider() {
+export async function createMockProvider(port: number = 9999) {
   const host = '0.0.0.0'
-  const port = 9999
   const fullnodeHandler = await DefaultWeb3Handler.create()
   const fullnodeRpcServer = new FullnodeRpcServer(fullnodeHandler, host, port)
   fullnodeRpcServer.listen()
@@ -110,7 +109,7 @@ export async function deployContract(
 ) {
   const factory = new ContractFactory(
     contractJSON.abi,
-    contractJSON.bytecode,
+    contractJSON.bytecode || contractJSON.evm.bytecode,
     wallet
   )
 
