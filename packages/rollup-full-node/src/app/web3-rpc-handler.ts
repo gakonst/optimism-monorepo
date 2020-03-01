@@ -50,6 +50,7 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
   public static async create(
     provider: Web3Provider = createMockProvider({
       gasLimit: DEFAULT_ETHNODE_GAS_LIMIT,
+      allowUnlimitedContractSize: true,
     })
   ): Promise<DefaultWeb3Handler> {
     // Initialize a fullnode for us to interact with
