@@ -143,6 +143,10 @@ export class TranspilerImpl implements Transpiler {
       errors.push(
         ...(deployedBytecodeTranspilationResult as ErroredTranspilation).errors
       )
+      return {
+        succeeded: false,
+        errors
+      }
     }
     const transpiledDeployedBytecode: EVMBytecode =
       deployedBytecodeTranspilationResult.bytecodeWithTags
@@ -191,6 +195,10 @@ export class TranspilerImpl implements Transpiler {
         ...(constructorInitLogicTranspilationResult as ErroredTranspilation)
           .errors
       )
+      return {
+        succeeded: false,
+        errors
+      }
     }
     const transpiledConstructorInitLogic: EVMBytecode =
       constructorInitLogicTranspilationResult.bytecodeWithTags
