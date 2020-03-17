@@ -481,15 +481,13 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
     // First pull out the `to` field (we just need to check if it's null & if so set ovmTo to the zero address as that's how we deploy contracts)
     const ovmTo = ovmTx.to === null ? ZERO_ADDRESS : ovmTx.to
     // Construct the raw transaction calldata
-    const internalCalldata = this.generateEOACallCalldata(
+    // TODO: Check nonce
+   const internalCalldata = this.generateUnsignedTransactionCalldata(
       this.getTimestamp(),
       0,
-      ovmTx.nonce,
       ovmTo,
       ovmTx.data,
-      ovmTx.v,
-      ovmTx.r,
-      ovmTx.s
+      ovmTx.from
     )
 
     log.debug(`EOA calldata: [${internalCalldata}]`)
@@ -539,6 +537,23 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
       'executeUnsignedEOACall'
     ].encode([timestamp, queueOrigin, ovmEntrypoint, callBytes, fromAddress])
   }
+
+  private generateUnsignedTransactionCalldata(
+    timestamp: number,
+    queueOrigin: number,
+    ovmEntrypoint: string,
+    callBytes: string,
+    fromAddress: string
+  ): string {
+    // Update the ovmEntrypoint to be the ZERO_ADDRESS if this is a contract creation
+    if (ovmEntrypoint === null || ovmEntrypoint === undefined) {
+      ovmEntrypoint = ZERO_ADDRESS
+    }
+    return this.executionManager.interface.functions[
+      'executeUnsignedEOATransaction'
+    ].encode([timestamp, queueOrigin, ovmEntrypoint, callBytes, fromAddress])
+  }
+
 
   private generateEOACallCalldata(
     timestamp: number,

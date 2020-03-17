@@ -194,6 +194,19 @@ contract ExecutionManager is FullStateManager {
         executionContext.ovmTxOrigin = ZERO_ADDRESS;
     }
 
+    // TODO add comments, and add this in to master
+    function executeUnsignedEOATransaction(
+        uint _timestamp,
+        uint _queueOrigin,
+        address _ovmEntrypoint,
+        bytes memory _callBytes,
+        address _fromAddress
+    ) public {
+        executionContext.ovmTxOrigin = _fromAddress;
+        executeUnsignedEOACall(_timestamp, _queueOrigin, _ovmEntrypoint, _callBytes, _fromAddress);
+        executionContext.ovmTxOrigin = ZERO_ADDRESS;
+    }
+
     /**
      * @notice Execute an unsigned EOA call. Note that unsigned EOA calls are unauthenticated.
      *         This means that they should not be allowed for normal execution.
