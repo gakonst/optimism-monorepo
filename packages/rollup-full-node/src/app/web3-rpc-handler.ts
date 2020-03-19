@@ -486,11 +486,11 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
     const expectedNonce = (
       await this.executionManager.getOvmContractNonce(ovmTx.from)
     ).toNumber()
-    if (expectedNonce !== ovmTx.nonce) {
-      throw new Error(
-        `Incorrect nonce! Expected nonce: ${expectedNonce} but received nonce: ${ovmTx.nonce}`
-      )
-    }
+    // if (expectedNonce !== ovmTx.nonce) {
+    //   throw new Error(
+    //     `Incorrect nonce! Expected nonce: ${expectedNonce} but received nonce: ${ovmTx.nonce}`
+    //   )
+    // }
     // Construct the raw transaction calldata
     const internalCalldata = this.getTransactionCalldata(
       this.getTimestamp(),
