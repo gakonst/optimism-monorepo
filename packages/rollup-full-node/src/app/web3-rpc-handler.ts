@@ -490,22 +490,25 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
         log.error(msg)
         throw Error(msg)
       }
-
-      const receipt: OvmTransactionReceipt = await this.getTransactionReceipt(
-        ovmTxHash,
-        true
-      )
-      log.debug(
-        `Transaction receipt for ${rawOvmTx}: ${JSON.stringify(receipt)}`
-      )
-      if (!receipt || !receipt.status) {
-        log.debug(`Transaction reverted: ${rawOvmTx}, ovmTxHash: ${ovmTxHash}`)
-        throw new RevertError(receipt.revertMessage)
-      }
-
-      await this.processTransactionEvents(receipt)
-
-      this.blockTimestamps[receipt.blockNumber] = timestamp
+      this.context.provider.waitForTransaction(internalTxHash).then(async () => {
+        const receipt: OvmTransactionReceipt = await this.getTransactionReceipt(
+          ovmTxHash,
+          true
+        )
+        log.debug(
+          `Transaction receipt for ${rawOvmTx}: ${JSON.stringify(receipt)}`
+        )
+        if (!receipt) {
+          log.error(`Unable to find receipt for raw ovm tx: ${rawOvmTx}`)
+          return
+        } else if (!receipt.status) {
+          log.debug(`Transaction reverted: ${rawOvmTx}`)
+        } else {
+          log.debug(`Transaction mined successfully: ${rawOvmTx}`)
+          await this.processTransactionEvents(receipt)
+        }
+        this.blockTimestamps[receipt.blockNumber] = timestamp
+      })
       log.debug(`Completed send raw tx [${rawOvmTx}]. Response: [${ovmTxHash}]`)
       // Return the *OVM* tx hash. We can do this because we store a mapping to the ovmTxHashs in the EM contract.
       return ovmTxHash
