@@ -20,7 +20,7 @@ module.exports = {
     test: {
       network_id: 108,
       provider: function() {
-        return ProviderWrapper.wrapProviderAndStartLocalNode(new HDWalletProvider(mnemonic, "http://127.0.0.1:8545/", 0, 10));
+        return ProviderWrapper.wrapProvider(new HDWalletProvider(mnemonic, "http://127.0.0.1:8545/", 0, 10));
       },
       gasPrice: gasPrice,
       gas: gas,

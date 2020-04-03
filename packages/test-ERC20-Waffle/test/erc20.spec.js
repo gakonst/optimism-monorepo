@@ -1,10 +1,18 @@
 const {use, expect} = require('chai');
 const {solidity} = require('ethereum-waffle');
-const {createMockProvider, getWallets, deployContract } = require('@eth-optimism/rollup-full-node')
+const { providers } = require('ethers');
+const { getWallets, deployContract } = require('@eth-optimism/rollup-full-node')
 const ERC20 = require('../build/ERC20.json');
 
 use(solidity);
-
+async function createMockProvider(
+  port = 8545
+) {
+  const host = '0.0.0.0'
+  const baseUrl = `http://${host}:${port}`
+  const httpProvider = new providers.JsonRpcProvider(baseUrl)
+  return httpProvider
+}
 describe('ERC20 smart contract', () => {
   let provider
   let wallet, walletTo
@@ -14,8 +22,7 @@ describe('ERC20 smart contract', () => {
     const wallets = getWallets(provider)
     wallet = wallets[0]
     walletTo = wallets[1]
-  })
-  after(() => {provider.closeOVM()}) 
+  }) 
   // parameters to use for our test coin
   const COIN_NAME = 'OVM Test Coin'
   const TICKER = 'OVM'
