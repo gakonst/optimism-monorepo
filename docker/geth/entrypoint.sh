@@ -72,5 +72,5 @@ if [[ ! -f $KEYSTORE_PATH && ! -f $SETUP_RUN_PATH ]]; then
 fi
 
 ## Command to kick off geth
-geth --datadir $VOLUME_PATH --syncmode 'full' --rpc --rpcaddr $HOSTNAME  --rpcvhosts=$HOSTNAME --rpcapi 'eth,net' --rpcport $PORT --networkid $NETWORK_ID --nodiscover --nousb --allow-insecure-unlock -unlock `cat $SEALER_ADDRESS_PATH` --password /dev/null --gasprice '1' --mine
+geth --datadir $VOLUME_PATH --syncmode 'full' --rpc --rpcaddr $HOSTNAME  --rpcvhosts=$HOSTNAME --rpcapi 'eth,net' --rpcport $PORT --networkid $NETWORK_ID --nodiscover --nousb --allow-insecure-unlock -unlock `cat $SEALER_ADDRESS_PATH` --password /dev/null --gasprice '0' --targetgaslimit '0xffffffff' --mine
 

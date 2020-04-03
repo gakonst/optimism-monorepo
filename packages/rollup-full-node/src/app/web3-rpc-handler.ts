@@ -310,6 +310,9 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
         this.blockTimestamps[block['number']]
       )
     }
+    // block['gasLimit'] = numberToHexString(
+    //   GAS_LIMIT
+    // )
     if (fullObjects) {
       block['transactions'] = (
         await Promise.all(
@@ -414,6 +417,7 @@ export class DefaultWeb3Handler implements Web3Handler, FullnodeHandler {
       log.debug(`No tx receipt found for ovm tx hash [${ovmTxHash}]`)
       return undefined
     }
+    log.info('Internal tx receipt:', internalTxReceipt)
 
     // Now let's parse the internal transaction reciept
     const ovmTxReceipt: OvmTransactionReceipt = await internalTxReceiptToOvmTxReceipt(
