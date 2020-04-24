@@ -183,14 +183,14 @@ export const internalTxReceiptToOvmTxReceipt = async (
   // Add the converted logs
   ovmTxReceipt.logs = convertInternalLogsToOvmLogs(internalTxReceipt.logs)
   // Update the to and from fields
+  ovmTxReceipt.contractAddress = null
   if (ovmTransactionMetadata.ovmTo) {
+    ovmTxReceipt.contractAddress = ovmTransactionMetadata.ovmTo
     ovmTxReceipt.to = ovmTransactionMetadata.ovmTo
   }
   // TODO: Update this to use some default account abstraction library potentially.
   // ovmTxReceipt.from = ovmTransactionMetadata.ovmFrom
   // Also update the contractAddress in case we deployed a new contract
-  ovmTxReceipt.contractAddress =
-    ovmTransactionMetadata.ovmCreatedContractAddress
 
   ovmTxReceipt.status = ovmTransactionMetadata.ovmTxSucceeded ? 1 : 0
 
