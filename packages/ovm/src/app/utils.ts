@@ -121,10 +121,11 @@ export const getOvmTransactionMetadata = (
     (x) => x.name === 'EOACallRevert'
   )
   ovmTxSucceeded = !revertEvents.length
-
+  logger.debug(`callingWithEoaLog: ${callingWithEoaLog}`)
   if (callingWithEoaLog) {
     ovmFrom = callingWithEoaLog.values._ovmFromAddress
   }
+  logger.debug(`eoaContractCreatedLog: ${eoaContractCreatedLog}`)
   if (eoaContractCreatedLog) {
     ovmCreatedContractAddress = eoaContractCreatedLog.values._ovmContractAddress
     ovmTo = ovmCreatedContractAddress
@@ -182,9 +183,11 @@ export const internalTxReceiptToOvmTxReceipt = async (
   // Add the converted logs
   ovmTxReceipt.logs = convertInternalLogsToOvmLogs(internalTxReceipt.logs)
   // Update the to and from fields
-  ovmTxReceipt.to = ovmTransactionMetadata.ovmTo
+  if (ovmTransactionMetadata.ovmTo) {
+    ovmTxReceipt.to = ovmTransactionMetadata.ovmTo
+  }
   // TODO: Update this to use some default account abstraction library potentially.
-  ovmTxReceipt.from = ovmTransactionMetadata.ovmFrom
+  // ovmTxReceipt.from = ovmTransactionMetadata.ovmFrom
   // Also update the contractAddress in case we deployed a new contract
   ovmTxReceipt.contractAddress =
     ovmTransactionMetadata.ovmCreatedContractAddress
@@ -204,6 +207,7 @@ export const internalTxReceiptToOvmTxReceipt = async (
   ovmTxReceipt.logs.forEach((log) => {
     logsBloom.add(hexStrToBuf(log.address))
     log.topics.forEach((topic) => logsBloom.add(hexStrToBuf(topic)))
+    log.transactionHash = ovmTxReceipt.transactionHash
   })
   ovmTxReceipt.logsBloom = bufToHexString(logsBloom.bitvector)
 

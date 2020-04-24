@@ -544,6 +544,10 @@ export class DefaultWeb3Handler
       internalTxReceipt,
       ovmTxHash
     )
+    const ovmTx = await this.getTransactionByHash(ovmTxReceipt.transactionHash)
+    log.debug(`got OVM tx from hash: [${JSON.stringify(ovmTx)}]`)
+    ovmTxReceipt.to = ovmTx.to ? ovmTx.to : ovmTxReceipt.to
+    ovmTxReceipt.from = ovmTx.from
     if (ovmTxReceipt.revertMessage !== undefined && !includeRevertMessage) {
       delete ovmTxReceipt.revertMessage
     }
