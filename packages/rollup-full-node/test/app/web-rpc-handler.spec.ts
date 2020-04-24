@@ -359,13 +359,14 @@ describe('Web3Handler', () => {
         )
         const tx = await eventEmitter.emitEvent(executionManagerAddress)
 
-        const logs = (
-          await httpProvider.getLogs({
-            address: eventEmitter.address,
-          })
-        ).map((x) => factory.interface.parseLog(x))
-        logs.length.should.eq(1)
-        logs[0].name.should.eq('Event')
+        const logs = await httpProvider.getLogs({
+          address: eventEmitter.address,
+        })
+        logs[0].address.should.eq(eventEmitter.address)
+        logs[0].logIndex.should.eq(0)
+        const parsedLogs = logs.map((x) => factory.interface.parseLog(x))
+        parsedLogs.length.should.eq(1)
+        parsedLogs[0].name.should.eq('Event')
       })
     })
 
