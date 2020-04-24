@@ -5,6 +5,7 @@ import {
   getLogger,
   hexStrToBuf,
   bufToHexString,
+  numberToHexString,
   logError,
   remove0x,
   ZERO_ADDRESS,
@@ -204,10 +205,11 @@ export const internalTxReceiptToOvmTxReceipt = async (
 
   logger.debug('Ovm parsed logs:', ovmTxReceipt.logs)
   const logsBloom = new BloomFilter()
-  ovmTxReceipt.logs.forEach((log) => {
+  ovmTxReceipt.logs.forEach((log, index) => {
     logsBloom.add(hexStrToBuf(log.address))
     log.topics.forEach((topic) => logsBloom.add(hexStrToBuf(topic)))
     log.transactionHash = ovmTxReceipt.transactionHash
+    log.logIndex = numberToHexString(index) as any
   })
   ovmTxReceipt.logsBloom = bufToHexString(logsBloom.bitvector)
 
